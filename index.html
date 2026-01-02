@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>My Heartbeat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; overflow: hidden; }
+
+        body {
+            background: radial-gradient(circle at center, #2b0c13 0%, #000000 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* --- BACKGROUND PARTICLES CANVAS --- */
+        #canvas {
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* --- CENTER HEART INTERACTION --- */
+        .heart-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: opacity 0.5s;
+        }
+
+        .heart-btn {
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle at 30% 30%, #ff5e78, #ff2e4c);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(255, 46, 76, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            animation: heartbeat 1.5s infinite ease-in-out;
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+        
+        .heart-btn::after {
+            content: '❤';
+            font-size: 3.5rem;
+            color: rgba(255,255,255,0.9);
+            margin-top: 5px; 
+        }
+
+        .instruction {
+            margin-top: 40px;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.6);
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes heartbeat {
+            0% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 46, 76, 0.4); }
+            15% { transform: scale(1.15); box-shadow: 0 0 50px rgba(255, 46, 76, 0.6); }
+            30% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 46, 76, 0.4); }
+            45% { transform: scale(1.15); box-shadow: 0 0 50px rgba(255, 46, 76, 0.6); }
+            60% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 46, 76, 0.4); }
+            100% { transform: scale(1); }
+        }
+
+        .heart-btn.fast { animation-duration: 0.6s; }
+        .heart-btn.super-fast { animation-duration: 0.3s; transform: scale(1.2); }
+
+        .shake { animation: shake 0.5s infinite linear; }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px); }
+            100% { transform: translate(-1px, -1px); }
+        }
+
+        /* --- HIDDEN CONTENT --- */
+        .love-card {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 85%;
+            max-width: 350px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 20;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transition: all 1s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .love-card.visible {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+
+        .photo-frame {
+            width: 150px; height: 150px;
+            margin: 0 auto 25px auto;
+            border-radius: 50%;
+            padding: 5px;
+            background: linear-gradient(45deg, #ff5e78, #ffc371);
+            box-shadow: 0 10px 30px rgba(255, 94, 120, 0.3);
+        }
+
+        .photo-frame img {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #1a1a1a;
+            display: block;
+        }
+
+        .love-card h1 {
+            font-family: 'Parisienne', cursive;
+            font-size: 2.5rem;
+            background: linear-gradient(to right, #ff9a9e, #fecfef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .love-card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 20px;
+        }
+
+        .signature {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-top: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <div class="heart-container" id="heartContainer">
+        <div class="heart-btn" id="heartBtn"></div>
+        <div class="instruction" id="instruction">Hold to feel my heart</div>
+    </div>
+
+    <div class="love-card" id="loveCard">
+        <div class="photo-frame">
+            <img src="https://images.unsplash.com/photo-1516575334481-f85287c2c81d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Us">
+        </div>
+        <h1>My Happy Place</h1>
+        <p>
+            My heart races whenever you are near. <br>
+            You are the most beautiful part of my life.
+        </p>
+        <div class="signature">Forever Yours</div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const heartBtn = document.getElementById('heartBtn');
+        const instruction = document.getElementById('instruction');
+        const heartContainer = document.getElementById('heartContainer');
+        const loveCard = document.getElementById('loveCard');
+
+        let width, height;
+        let particles = [];
+        let isHolding = false;
+        let intensity = 0; 
+        const MAX_INTENSITY = 100;
+        let animationId;
+        
+        // Vibration variables
+        let lastVibrateTime = 0;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = width / 2;
+                this.y = height / 2;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 2 + 1;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.alpha = 1;
+                this.size = Math.random() * 3 + 1;
+                this.color = `hsl(${Math.random() * 40 + 330}, 100%, 70%)`;
+            }
+            update() {
+                this.x += this.vx * (1 + intensity * 0.05);
+                this.y += this.vy * (1 + intensity * 0.05);
+                this.alpha -= 0.02;
+            }
+            draw() {
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        function startHold(e) {
+            e.preventDefault();
+            isHolding = true;
+            instruction.textContent = "Keep holding...";
+            
+            // Initial small vibration to confirm touch
+            if (navigator.vibrate) navigator.vibrate(20);
+        }
+
+        function endHold() {
+            isHolding = false;
+            if (intensity < MAX_INTENSITY) {
+                instruction.textContent = "Don't let go yet...";
+                setTimeout(() => {
+                    if(!isHolding) instruction.textContent = "Hold to feel my heart";
+                }, 1500);
+            }
+        }
+
+        heartBtn.addEventListener('mousedown', startHold);
+        heartBtn.addEventListener('touchstart', startHold);
+        window.addEventListener('mouseup', endHold);
+        window.addEventListener('touchend', endHold);
+
+        function animate(timestamp) {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, width, height);
+
+            if (isHolding && intensity < MAX_INTENSITY) {
+                intensity += 0.5;
+            } else if (!isHolding && intensity > 0) {
+                intensity -= 1;
+            }
+
+            // --- VIBRATION LOGIC ---
+            if (isHolding && intensity > 0) {
+                // Calculate time between vibrations based on intensity
+                // Low intensity: slow beats (800ms)
+                // High intensity: fast buzz (50ms)
+                let vibrateInterval = 800 - (intensity * 7);
+                if (vibrateInterval < 50) vibrateInterval = 50;
+
+                if (timestamp - lastVibrateTime > vibrateInterval) {
+                    // Trigger a short pulse (30ms)
+                    if (navigator.vibrate) {
+                        navigator.vibrate(30);
+                    }
+                    lastVibrateTime = timestamp;
+                }
+            }
+
+            // Visual Intensity
+            if (intensity > 20) heartBtn.classList.add('fast');
+            else heartBtn.classList.remove('fast');
+
+            if (intensity > 60) {
+                heartBtn.classList.add('super-fast');
+                heartContainer.classList.add('shake');
+                instruction.textContent = "Almost there...";
+            } else {
+                heartBtn.classList.remove('super-fast');
+                heartContainer.classList.remove('shake');
+            }
+
+            const spawnCount = Math.floor(intensity / 5); 
+            for (let i = 0; i < spawnCount; i++) {
+                particles.push(new Particle());
+            }
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].alpha <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            if (intensity >= MAX_INTENSITY) {
+                revealSurprise();
+                return;
+            }
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function revealSurprise() {
+            // LONG VIBRATION ON SUCCESS
+            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+
+            for(let i=0; i<300; i++) particles.push(new Particle());
+            
+            heartContainer.style.opacity = '0';
+            heartContainer.style.pointerEvents = 'none';
+
+            let explodeFrames = 0;
+            function explosionLoop() {
+                ctx.fillStyle = 'rgba(0,0,0,0.1)';
+                ctx.fillRect(0,0,width,height);
+                
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    particles[i].update();
+                    particles[i].draw();
+                    if (particles[i].alpha <= 0) particles.splice(i, 1);
+                }
+                
+                if (particles.length > 0) requestAnimationFrame(explosionLoop);
+            }
+            explosionLoop();
+
+            setTimeout(() => {
+                loveCard.classList.add('visible');
+            }, 500);
+        }
+
+        animate(0);
+
+    </script>
+</body>
+</html>
+
