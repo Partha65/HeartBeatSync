@@ -1,356 +1,426 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>My Heartbeat</title>
-    <link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    <title>Our Journey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Quicksand:wght@300;500;700&display=swap"
+        rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; overflow: hidden; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
 
         body {
-            background: radial-gradient(circle at center, #2b0c13 0%, #000000 100%);
+            background-color: #080810;
+            /* Deep space black */
             height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Montserrat', sans-serif;
+            width: 100vw;
             color: white;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* --- BACKGROUND PARTICLES CANVAS --- */
-        #canvas {
-            position: absolute;
-            top: 0; left: 0;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* --- CENTER HEART INTERACTION --- */
-        .heart-container {
-            position: relative;
-            z-index: 10;
+            font-family: 'Quicksand', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: opacity 0.5s;
-        }
-
-        .heart-btn {
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle at 30% 30%, #ff5e78, #ff2e4c);
-            border-radius: 50%;
-            box-shadow: 0 0 30px rgba(255, 46, 76, 0.4);
-            display: flex;
             justify-content: center;
-            align-items: center;
+            touch-action: manipulation;
             cursor: pointer;
-            position: relative;
-            animation: heartbeat 1.5s infinite ease-in-out;
-            transition: transform 0.1s, box-shadow 0.2s;
-        }
-        
-        .heart-btn::after {
-            content: '❤';
-            font-size: 3.5rem;
-            color: rgba(255,255,255,0.9);
-            margin-top: 5px; 
+            /* Change cursor to indicate clickability */
         }
 
-        .instruction {
-            margin-top: 40px;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.6);
-            opacity: 0.8;
-            transition: opacity 0.3s;
-        }
-
-        /* --- ANIMATIONS --- */
-        @keyframes heartbeat {
-            0% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 46, 76, 0.4); }
-            15% { transform: scale(1.15); box-shadow: 0 0 50px rgba(255, 46, 76, 0.6); }
-            30% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 46, 76, 0.4); }
-            45% { transform: scale(1.15); box-shadow: 0 0 50px rgba(255, 46, 76, 0.6); }
-            60% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 46, 76, 0.4); }
-            100% { transform: scale(1); }
-        }
-
-        .heart-btn.fast { animation-duration: 0.6s; }
-        .heart-btn.super-fast { animation-duration: 0.3s; transform: scale(1.2); }
-
-        .shake { animation: shake 0.5s infinite linear; }
-        @keyframes shake {
-            0% { transform: translate(1px, 1px); }
-            100% { transform: translate(-1px, -1px); }
-        }
-
-        /* --- HIDDEN CONTENT --- */
-        .love-card {
+        /* --- LAYERS --- */
+        #bg-canvas {
             position: absolute;
-            top: 50%; left: 50%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        #main-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        /* --- UI TEXT --- */
+        .ui-layer {
+            position: absolute;
+            z-index: 20;
+            text-align: center;
+            width: 80%;
+            pointer-events: none;
+        }
+
+        h1.title {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            transition: opacity 1s;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #aaa;
+            margin-bottom: 40px;
+            animation: pulse 2s infinite;
+            transition: opacity 1s;
+        }
+
+        /* --- MEMORY TEXTS --- */
+        .memory-box {
+            position: absolute;
+            bottom: 10%;
+            /* Lowered slightly to make room */
+            width: 100%;
+            text-align: center;
+            z-index: 30;
+            pointer-events: none;
+            padding: 0 20px;
+            transition: opacity 0.8s, transform 0.8s;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .memory-box.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .date {
+            color: #ff9a9e;
+            font-weight: 700;
+            letter-spacing: 1px;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .story {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* NEW: Tap Hint Styling */
+        .tap-hint {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* --- FINAL CARD --- */
+        .final-card {
+            position: absolute;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%) scale(0.8);
             width: 85%;
             max-width: 350px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 40px 30px;
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 15px;
             text-align: center;
             opacity: 0;
             pointer-events: none;
-            z-index: 20;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            transition: all 1s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 50;
+            box-shadow: 0 0 50px rgba(255, 118, 117, 0.2);
+            transition: all 1s ease;
         }
 
-        .love-card.visible {
+        .final-card.show {
             opacity: 1;
             transform: translate(-50%, -50%) scale(1);
             pointer-events: auto;
         }
 
         .photo-frame {
-            width: 150px; height: 150px;
-            margin: 0 auto 25px auto;
-            border-radius: 50%;
-            padding: 5px;
-            background: linear-gradient(45deg, #ff5e78, #ffc371);
-            box-shadow: 0 10px 30px rgba(255, 94, 120, 0.3);
+            width: 100%;
+            height: 250px;
+            background: #000;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .photo-frame img {
-            width: 100%; height: 100%;
-            border-radius: 50%;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            border: 3px solid #1a1a1a;
-            display: block;
+            opacity: 0.9;
         }
 
-        .love-card h1 {
-            font-family: 'Parisienne', cursive;
-            font-size: 2.5rem;
-            background: linear-gradient(to right, #ff9a9e, #fecfef);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 15px;
-        }
-
-        .love-card p {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: rgba(255,255,255,0.85);
-            margin-bottom: 20px;
-        }
-
-        .signature {
-            font-size: 0.8rem;
-            opacity: 0.6;
+        .btn-gallery {
+            display: inline-block;
             margin-top: 20px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            padding: 10px 25px;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .btn-gallery:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.4
+            }
+
+            50% {
+                opacity: 1
+            }
+        }
+
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
         }
     </style>
 </head>
+
 <body>
 
-    <canvas id="canvas"></canvas>
+    <canvas id="bg-canvas"></canvas>
+    <canvas id="main-canvas"></canvas>
 
-    <div class="heart-container" id="heartContainer">
-        <div class="heart-btn" id="heartBtn"></div>
-        <div class="instruction" id="instruction">Hold to feel my heart</div>
+    <div class="ui-layer" id="startScreen">
+        <h1 class="title">Our Constellation</h1>
+        <div class="subtitle">Tap anywhere to create our story</div>
     </div>
 
-    <div class="love-card" id="loveCard">
+    <div class="memory-box" id="memoryBox">
+        <div class="date" id="dateText"></div>
+        <div class="story" id="storyText"></div>
+        <div class="tap-hint">Tap screen to continue ⟶</div>
+    </div>
+
+    <div class="final-card" id="finalCard">
         <div class="photo-frame">
-            <img src="https://raw.githubusercontent.com/Partha65/HeartBeatSync/refs/heads/main/file_000000003cbc71faade9b33fffcfd3ee.png" alt="Us">
+            <img src="https://raw.githubusercontent.com/Partha65/HeartBeatSync/refs/heads/main/file_000000003cbc71faade9b33fffcfd3ee.png"
+                alt="Us">
         </div>
-        <h1>My Happy Place</h1>
-        <p>
-            My heart races whenever you are near. <br>
-            You are the most beautiful part of my life.
+        <h2 style="font-family:'Cinzel'; margin-bottom:10px;">The Next Chapter</h2>
+        <p style="font-size: 0.9rem; color: #ddd; line-height: 1.5;">
+            From that first hello to where we are now, every moment has been a star in our sky.
         </p>
-        <div class="signature">Forever Yours</div>
+        <a href="https://example.com/gallery" target="_blank" class="btn-gallery">View Our Album</a>
     </div>
 
     <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const heartBtn = document.getElementById('heartBtn');
-        const instruction = document.getElementById('instruction');
-        const heartContainer = document.getElementById('heartContainer');
-        const loveCard = document.getElementById('loveCard');
+        const memories = [
+            {
+                date: "Nov 26, 2023",
+                text: "It all began with a simple 'Hello' in Instagram DM 💬💖",
+                x: 15, y: 75
+            },
+            {
+                date: "December 2, 2023",
+                text: "Our first meet & movie date 🎬🍿❤️",
+                x: 35, y: 40
+            },
+            {
+                date: "December 21, 2023",
+                text: "The day you proposed to me 💍🥰",
+                x: 65, y: 60
+            },
+            {
+                date: "March 30, 2024",
+                text: "I proposed to you with a rose in the cinema hall 🌹🎥💞",
+                x: 50, y: 20
+            },
+            {
+                date: "November 26, 2024",
+                text: "We celebrated our 1st anniversary together 🎉❤️✨",
+                x: 85, y: 35
+            }
+        ];
+
+
+        /* --- SETUP --- */
+        const mainCanvas = document.getElementById('main-canvas');
+        const bgCanvas = document.getElementById('bg-canvas');
+        const ctx = mainCanvas.getContext('2d');
+        const bgCtx = bgCanvas.getContext('2d');
+
+        const startScreen = document.getElementById('startScreen');
+        const memoryBox = document.getElementById('memoryBox');
+        const dateText = document.getElementById('dateText');
+        const storyText = document.getElementById('storyText');
+        const finalCard = document.getElementById('finalCard');
 
         let width, height;
-        let particles = [];
-        let isHolding = false;
-        let intensity = 0; 
-        const MAX_INTENSITY = 100;
-        let animationId;
-        
-        // Vibration variables
-        let lastVibrateTime = 0;
+        let step = -1;
+        let points = [];
 
         function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
+            width = window.innerWidth;
+            height = window.innerHeight;
+            mainCanvas.width = width;
+            mainCanvas.height = height;
+            bgCanvas.width = width;
+            bgCanvas.height = height;
+
+            points = memories.map(m => ({
+                x: (m.x / 100) * width,
+                y: (m.y / 100) * height
+            }));
+
+            drawBackground();
+            if (step >= 0) redrawCurrentState();
         }
         window.addEventListener('resize', resize);
         resize();
 
-        class Particle {
-            constructor() {
-                this.reset();
+        /* --- INTERACTION --- */
+        document.addEventListener('click', nextStep);
+        document.addEventListener('touchstart', (e) => {
+            // We don't preventDefault here so links in the final card still work
+            // But we trigger the logic
+            if (e.target.tagName !== 'A') nextStep();
+        });
+
+        function nextStep() {
+            if (step >= memories.length) return;
+
+            // Prevent double skipping if animation is running (simple check)
+            // if (memoryBox.style.opacity === '1') ... optional logic
+
+            step++;
+
+            if (step === 0) {
+                startScreen.classList.add('hidden');
+                drawStar(points[0].x, points[0].y);
+                showText(0);
             }
-            reset() {
-                this.x = width / 2;
-                this.y = height / 2;
-                const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 2 + 1;
-                this.vx = Math.cos(angle) * speed;
-                this.vy = Math.sin(angle) * speed;
-                this.alpha = 1;
-                this.size = Math.random() * 3 + 1;
-                this.color = `hsl(${Math.random() * 40 + 330}, 100%, 70%)`;
+            else if (step < memories.length) {
+                animateLine(points[step - 1], points[step]);
+                showText(step);
             }
-            update() {
-                this.x += this.vx * (1 + intensity * 0.05);
-                this.y += this.vy * (1 + intensity * 0.05);
-                this.alpha -= 0.02;
+            else {
+                finishJourney();
             }
-            draw() {
-                ctx.globalAlpha = this.alpha;
-                ctx.fillStyle = this.color;
+        }
+
+        /* --- VISUALS --- */
+        function showText(index) {
+            // Hide previous text
+            memoryBox.classList.remove('active');
+
+            // Wait for fade out, then update and show new
+            setTimeout(() => {
+                dateText.innerText = memories[index].date;
+                storyText.innerText = memories[index].text;
+                memoryBox.classList.add('active');
+            }, 400);
+        }
+
+        function drawStar(x, y) {
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fillStyle = "#fff";
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = "#ff9a9e";
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(x, y, 10, 0, Math.PI * 2);
+            ctx.strokeStyle = "rgba(255,255,255,0.3)";
+            ctx.stroke();
+        }
+
+        function animateLine(p1, p2) {
+            let progress = 0;
+            const speed = 0.03;
+
+            function draw() {
+                progress += speed;
+                if (progress > 1) progress = 1;
+
+                const curX = p1.x + (p2.x - p1.x) * progress;
+                const curY = p1.y + (p2.y - p1.y) * progress;
+
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.globalAlpha = 1;
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(curX, curY);
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.6)";
+                ctx.lineWidth = 2;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = "white";
+                ctx.stroke();
+
+                if (progress < 1) {
+                    requestAnimationFrame(draw);
+                } else {
+                    drawStar(p2.x, p2.y);
+                }
             }
+            draw();
         }
 
-        function startHold(e) {
-            e.preventDefault();
-            isHolding = true;
-            instruction.textContent = "Keep holding...";
-            
-            // Initial small vibration to confirm touch
-            if (navigator.vibrate) navigator.vibrate(20);
-        }
-
-        function endHold() {
-            isHolding = false;
-            if (intensity < MAX_INTENSITY) {
-                instruction.textContent = "Don't let go yet...";
-                setTimeout(() => {
-                    if(!isHolding) instruction.textContent = "Hold to feel my heart";
-                }, 1500);
-            }
-        }
-
-        heartBtn.addEventListener('mousedown', startHold);
-        heartBtn.addEventListener('touchstart', startHold);
-        window.addEventListener('mouseup', endHold);
-        window.addEventListener('touchend', endHold);
-
-        function animate(timestamp) {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            ctx.fillRect(0, 0, width, height);
-
-            if (isHolding && intensity < MAX_INTENSITY) {
-                intensity += 0.5;
-            } else if (!isHolding && intensity > 0) {
-                intensity -= 1;
-            }
-
-            // --- VIBRATION LOGIC ---
-            if (isHolding && intensity > 0) {
-                // Calculate time between vibrations based on intensity
-                // Low intensity: slow beats (800ms)
-                // High intensity: fast buzz (50ms)
-                let vibrateInterval = 800 - (intensity * 7);
-                if (vibrateInterval < 50) vibrateInterval = 50;
-
-                if (timestamp - lastVibrateTime > vibrateInterval) {
-                    // Trigger a short pulse (30ms)
-                    if (navigator.vibrate) {
-                        navigator.vibrate(30);
+        function redrawCurrentState() {
+            ctx.clearRect(0, 0, width, height);
+            if (step >= 0 && step < memories.length) {
+                for (let i = 0; i <= step; i++) {
+                    drawStar(points[i].x, points[i].y);
+                    if (i > 0) {
+                        ctx.beginPath();
+                        ctx.moveTo(points[i - 1].x, points[i - 1].y);
+                        ctx.lineTo(points[i].x, points[i].y);
+                        ctx.stroke();
                     }
-                    lastVibrateTime = timestamp;
                 }
             }
-
-            // Visual Intensity
-            if (intensity > 20) heartBtn.classList.add('fast');
-            else heartBtn.classList.remove('fast');
-
-            if (intensity > 60) {
-                heartBtn.classList.add('super-fast');
-                heartContainer.classList.add('shake');
-                instruction.textContent = "Almost there...";
-            } else {
-                heartBtn.classList.remove('super-fast');
-                heartContainer.classList.remove('shake');
-            }
-
-            const spawnCount = Math.floor(intensity / 5); 
-            for (let i = 0; i < spawnCount; i++) {
-                particles.push(new Particle());
-            }
-
-            for (let i = particles.length - 1; i >= 0; i--) {
-                particles[i].update();
-                particles[i].draw();
-                if (particles[i].alpha <= 0) {
-                    particles.splice(i, 1);
-                }
-            }
-
-            if (intensity >= MAX_INTENSITY) {
-                revealSurprise();
-                return;
-            }
-
-            animationId = requestAnimationFrame(animate);
         }
 
-        function revealSurprise() {
-            // LONG VIBRATION ON SUCCESS
-            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-
-            for(let i=0; i<300; i++) particles.push(new Particle());
-            
-            heartContainer.style.opacity = '0';
-            heartContainer.style.pointerEvents = 'none';
-
-            let explodeFrames = 0;
-            function explosionLoop() {
-                ctx.fillStyle = 'rgba(0,0,0,0.1)';
-                ctx.fillRect(0,0,width,height);
-                
-                for (let i = particles.length - 1; i >= 0; i--) {
-                    particles[i].update();
-                    particles[i].draw();
-                    if (particles[i].alpha <= 0) particles.splice(i, 1);
-                }
-                
-                if (particles.length > 0) requestAnimationFrame(explosionLoop);
+        function drawBackground() {
+            bgCtx.clearRect(0, 0, width, height);
+            bgCtx.fillStyle = 'white';
+            for (let i = 0; i < 150; i++) {
+                const x = Math.random() * width;
+                const y = Math.random() * height;
+                const s = Math.random() * 1.5;
+                bgCtx.globalAlpha = Math.random() * 0.5 + 0.1;
+                bgCtx.beginPath();
+                bgCtx.arc(x, y, s, 0, Math.PI * 2);
+                bgCtx.fill();
             }
-            explosionLoop();
+        }
+
+        function finishJourney() {
+            memoryBox.classList.remove('active');
+
+            mainCanvas.style.transition = "opacity 2s";
+            mainCanvas.style.opacity = "0.3";
 
             setTimeout(() => {
-                loveCard.classList.add('visible');
+                finalCard.classList.add('show');
             }, 500);
         }
-
-        animate(0);
-
     </script>
 </body>
-</html>
 
+</html>
