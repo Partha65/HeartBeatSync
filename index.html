@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Our Journey</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Quicksand:wght@300;500;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; overflow: hidden; }
 
         body {
-            background-color: #080810;
-            /* Deep space black */
+            background-color: #080810; /* Deep space black */
             height: 100vh;
             width: 100vw;
             color: white;
@@ -28,22 +20,20 @@
             justify-content: center;
             touch-action: manipulation;
             cursor: pointer;
-            /* Change cursor to indicate clickability */
+            -webkit-tap-highlight-color: transparent; /* Removes blue highlight on mobile */
         }
 
         /* --- LAYERS --- */
         #bg-canvas {
             position: absolute;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             z-index: 0;
             opacity: 0.5;
         }
 
         #main-canvas {
             position: absolute;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             z-index: 10;
         }
 
@@ -53,14 +43,14 @@
             z-index: 20;
             text-align: center;
             width: 80%;
-            pointer-events: none;
+            pointer-events: none; 
         }
 
         h1.title {
             font-family: 'Cinzel', serif;
             font-size: 2.5rem;
             margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
             transition: opacity 1s;
         }
 
@@ -77,8 +67,7 @@
         /* --- MEMORY TEXTS --- */
         .memory-box {
             position: absolute;
-            bottom: 10%;
-            /* Lowered slightly to make room */
+            bottom: 12%; 
             width: 100%;
             text-align: center;
             z-index: 30;
@@ -106,15 +95,14 @@
         .story {
             font-size: 1.2rem;
             line-height: 1.5;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
             max-width: 600px;
             margin: 0 auto;
         }
 
-        /* NEW: Tap Hint Styling */
         .tap-hint {
-            margin-top: 20px;
-            font-size: 0.8rem;
+            margin-top: 25px;
+            font-size: 0.75rem;
             color: rgba(255, 255, 255, 0.5);
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -124,14 +112,12 @@
         /* --- FINAL CARD --- */
         .final-card {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%) scale(0.8);
-            width: 85%;
-            max-width: 350px;
-            background: rgba(20, 20, 30, 0.6);
+            width: 85%; max-width: 350px;
+            background: rgba(20, 20, 30, 0.85); 
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255,255,255,0.2);
             padding: 30px;
             border-radius: 15px;
             text-align: center;
@@ -155,12 +141,11 @@
             margin-bottom: 20px;
             overflow: hidden;
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
         .photo-frame img {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             object-fit: cover;
             opacity: 0.9;
         }
@@ -178,30 +163,13 @@
             box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
             transition: transform 0.2s;
         }
+        .btn-gallery:active { transform: scale(0.95); }
 
-        .btn-gallery:active {
-            transform: scale(0.95);
-        }
+        @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+        .hidden { opacity: 0; pointer-events: none; }
 
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 0.4
-            }
-
-            50% {
-                opacity: 1
-            }
-        }
-
-        .hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
     </style>
 </head>
-
 <body>
 
     <canvas id="bg-canvas"></canvas>
@@ -209,7 +177,7 @@
 
     <div class="ui-layer" id="startScreen">
         <h1 class="title">Our Constellation</h1>
-        <div class="subtitle">Tap anywhere to create our story</div>
+        <div class="subtitle">Tap anywhere to begin</div>
     </div>
 
     <div class="memory-box" id="memoryBox">
@@ -220,8 +188,7 @@
 
     <div class="final-card" id="finalCard">
         <div class="photo-frame">
-            <img src="https://raw.githubusercontent.com/Partha65/HeartBeatSync/refs/heads/main/file_000000003cbc71faade9b33fffcfd3ee.png"
-                alt="Us">
+            <img src="https://raw.githubusercontent.com/Partha65/HeartBeatSync/refs/heads/main/file_000000003cbc71faade9b33fffcfd3ee.png" alt="Us">
         </div>
         <h2 style="font-family:'Cinzel'; margin-bottom:10px;">The Next Chapter</h2>
         <p style="font-size: 0.9rem; color: #ddd; line-height: 1.5;">
@@ -232,32 +199,32 @@
 
     <script>
         const memories = [
-            {
-                date: "Nov 26, 2023",
-                text: "It all began with a simple 'Hello' in Instagram DM 💬💖",
-                x: 15, y: 75
-            },
-            {
-                date: "December 2, 2023",
-                text: "Our first meet & movie date 🎬🍿❤️",
-                x: 35, y: 40
-            },
-            {
-                date: "December 21, 2023",
-                text: "The day you proposed to me 💍🥰",
-                x: 65, y: 60
-            },
-            {
-                date: "March 30, 2024",
-                text: "I proposed to you with a rose in the cinema hall 🌹🎥💞",
-                x: 50, y: 20
-            },
-            {
-                date: "November 26, 2024",
-                text: "We celebrated our 1st anniversary together 🎉❤️✨",
-                x: 85, y: 35
-            }
-        ];
+    { 
+        date: "Nov 26, 2023", 
+        text: "It all began with a simple 'Hello' in Instagram DM 💬💖", 
+        x: 15, y: 75 
+    },
+    { 
+        date: "December 2, 2023", 
+        text: "Our first meet & movie date 🎬🍿❤️", 
+        x: 35, y: 40 
+    },
+    { 
+        date: "December 21, 2023", 
+        text: "The day you proposed to me 💍🥰", 
+        x: 65, y: 60 
+    },
+    { 
+        date: "March 30, 2024", 
+        text: "I proposed to you with a rose in the cinema hall 🌹🎥💞", 
+        x: 50, y: 20 
+    },
+    { 
+        date: "November 26, 2024", 
+        text: "We celebrated our 1st anniversary together 🎉❤️✨", 
+        x: 85, y: 35 
+    }
+];
 
 
         /* --- SETUP --- */
@@ -265,7 +232,7 @@
         const bgCanvas = document.getElementById('bg-canvas');
         const ctx = mainCanvas.getContext('2d');
         const bgCtx = bgCanvas.getContext('2d');
-
+        
         const startScreen = document.getElementById('startScreen');
         const memoryBox = document.getElementById('memoryBox');
         const dateText = document.getElementById('dateText');
@@ -273,8 +240,8 @@
         const finalCard = document.getElementById('finalCard');
 
         let width, height;
-        let step = -1;
-        let points = [];
+        let step = -1; 
+        let points = []; 
 
         function resize() {
             width = window.innerWidth;
@@ -283,31 +250,41 @@
             mainCanvas.height = height;
             bgCanvas.width = width;
             bgCanvas.height = height;
-
+            
             points = memories.map(m => ({
                 x: (m.x / 100) * width,
                 y: (m.y / 100) * height
             }));
-
+            
             drawBackground();
-            if (step >= 0) redrawCurrentState();
+            if(step >= 0) redrawCurrentState();
         }
         window.addEventListener('resize', resize);
         resize();
 
-        /* --- INTERACTION --- */
-        document.addEventListener('click', nextStep);
-        document.addEventListener('touchstart', (e) => {
-            // We don't preventDefault here so links in the final card still work
-            // But we trigger the logic
-            if (e.target.tagName !== 'A') nextStep();
-        });
+        /* --- FIXED INTERACTION LOGIC --- */
+        let isProcessing = false; // Flag to prevent double taps
+
+        function handleInput(e) {
+            // 1. If user clicked a Link (like the final button), let it happen.
+            if(e.target.tagName === 'A') return;
+
+            // 2. If an animation is already processing, IGNORE the click.
+            if(isProcessing) return;
+
+            // 3. Lock input for 1 second (1000ms) to prevent accidental double-skips
+            isProcessing = true;
+            setTimeout(() => { isProcessing = false; }, 1000);
+
+            nextStep();
+        }
+
+        // Listen for both, but the 'isProcessing' flag will stop the duplicate.
+        document.addEventListener('click', handleInput);
+        document.addEventListener('touchstart', handleInput, {passive: false});
 
         function nextStep() {
-            if (step >= memories.length) return;
-
-            // Prevent double skipping if animation is running (simple check)
-            // if (memoryBox.style.opacity === '1') ... optional logic
+            if (step >= memories.length) return; 
 
             step++;
 
@@ -315,11 +292,11 @@
                 startScreen.classList.add('hidden');
                 drawStar(points[0].x, points[0].y);
                 showText(0);
-            }
+            } 
             else if (step < memories.length) {
-                animateLine(points[step - 1], points[step]);
+                animateLine(points[step-1], points[step]);
                 showText(step);
-            }
+            } 
             else {
                 finishJourney();
             }
@@ -327,15 +304,13 @@
 
         /* --- VISUALS --- */
         function showText(index) {
-            // Hide previous text
             memoryBox.classList.remove('active');
-
-            // Wait for fade out, then update and show new
+            
             setTimeout(() => {
                 dateText.innerText = memories[index].date;
                 storyText.innerText = memories[index].text;
                 memoryBox.classList.add('active');
-            }, 400);
+            }, 400); 
         }
 
         function drawStar(x, y) {
@@ -345,7 +320,7 @@
             ctx.shadowBlur = 15;
             ctx.shadowColor = "#ff9a9e";
             ctx.fill();
-
+            
             ctx.beginPath();
             ctx.arc(x, y, 10, 0, Math.PI * 2);
             ctx.strokeStyle = "rgba(255,255,255,0.3)";
@@ -354,7 +329,7 @@
 
         function animateLine(p1, p2) {
             let progress = 0;
-            const speed = 0.03;
+            const speed = 0.03; 
 
             function draw() {
                 progress += speed;
@@ -382,13 +357,13 @@
         }
 
         function redrawCurrentState() {
-            ctx.clearRect(0, 0, width, height);
-            if (step >= 0 && step < memories.length) {
-                for (let i = 0; i <= step; i++) {
+            ctx.clearRect(0,0,width,height);
+            if(step >= 0 && step < memories.length) {
+                for(let i=0; i<=step; i++) {
                     drawStar(points[i].x, points[i].y);
-                    if (i > 0) {
+                    if(i > 0) {
                         ctx.beginPath();
-                        ctx.moveTo(points[i - 1].x, points[i - 1].y);
+                        ctx.moveTo(points[i-1].x, points[i-1].y);
                         ctx.lineTo(points[i].x, points[i].y);
                         ctx.stroke();
                     }
@@ -397,30 +372,29 @@
         }
 
         function drawBackground() {
-            bgCtx.clearRect(0, 0, width, height);
+            bgCtx.clearRect(0,0,width,height);
             bgCtx.fillStyle = 'white';
-            for (let i = 0; i < 150; i++) {
+            for(let i=0; i<150; i++) {
                 const x = Math.random() * width;
                 const y = Math.random() * height;
                 const s = Math.random() * 1.5;
                 bgCtx.globalAlpha = Math.random() * 0.5 + 0.1;
                 bgCtx.beginPath();
-                bgCtx.arc(x, y, s, 0, Math.PI * 2);
+                bgCtx.arc(x, y, s, 0, Math.PI*2);
                 bgCtx.fill();
             }
         }
 
         function finishJourney() {
             memoryBox.classList.remove('active');
-
+            
             mainCanvas.style.transition = "opacity 2s";
             mainCanvas.style.opacity = "0.3";
-
+            
             setTimeout(() => {
                 finalCard.classList.add('show');
             }, 500);
         }
     </script>
 </body>
-
 </html>
